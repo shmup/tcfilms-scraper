@@ -1,14 +1,24 @@
-var request = require('request');
-var cheerio = require('cheerio');
+let request = require('request')
+let cheerio = require('cheerio')
+let url = "http://www.statetheatretc.org/schedule"
+var $$;
+var movies = [];
 
-var url = "http://www.statetheatretc.org/schedule"
+function Movie(data) {
+  this.title = data.title
+  this.theater = ""
+  this.rating = ""
+}
 
-request(url, function(error, response, html) {
-  if (error) {
-    console.log(error);
-    return;
-  }
-  var $ = cheerio.load(html)
-  var table = $("td[valign=top]").first().closest("table")
-  console.log(table);
+request(url, (error, response, html) => {
+  $$ = cheerio.load(html)
+  let table = $$("td[valign=top]").first().closest("table")
+  let days = $$(table).find("tr:not(:first-child)").find("td")
+  days.each((i, elem) => {
+    let movies = $$(this).find("p").each(() => {
+      if ($$(this).text().trim() === "") return;
+      let theater = $$(this).find("strong").html().split("<br>")
+      console.log(theater[0])
+    })
+  })
 })
